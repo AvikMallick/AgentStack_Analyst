@@ -1,0 +1,44 @@
+user_question:
+  description: The question from the user that needs to be answered using SQL
+  type: string
+  default: "What is the total sales amount for each product category in 2023?"
+
+connection_name:
+  description: The name of the database connection to use for query execution
+  type: string
+  default: "sales_db"
+
+available_tables:
+  description: List of available database tables with their schema information
+  type: object
+  default:
+    products:
+      columns:
+        - name: product_id
+          type: int
+          sample: [1, 2, 3]
+        - name: name
+          type: string
+          sample: ["Laptop", "Phone", "Tablet"]
+        - name: category
+          type: string
+          sample: ["Electronics", "Accessories", "Software"]
+    sales:
+      columns:
+        - name: sale_id
+          type: int
+          sample: [101, 102, 103]
+        - name: product_id
+          type: int
+          sample: [1, 2, 3]
+        - name: sale_date
+          type: date
+          sample: ["2023-01-15", "2023-02-20", "2023-03-10"]
+        - name: amount
+          type: float
+          sample: [1200.00, 800.00, 350.00]
+
+execute_query:
+  description: A helper tool to execute SQL queries on a specified connection and return results as pandas DataFrames
+  type: tool
+  default: execute_query

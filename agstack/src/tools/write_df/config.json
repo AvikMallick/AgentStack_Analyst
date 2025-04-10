@@ -1,0 +1,14 @@
+{
+    "name": "write_df_tool",
+    "description": "Save a pandas DataFrame to a CSV file in src/csv_data/outputs with the given filename.",
+    "parameters": {
+        "df": {
+            "type": "object",
+            "description": "DataFrame data as a dictionary"
+        },
+        "filename": {
+            "type": "string",
+            "description": "Name for the CSV file (with or without .csv extension)"
+        }
+    }
+} 

@@ -1,0 +1,14 @@
+{
+    "name": "execute_query_tool",
+    "description": "Executes a SQL query on the specified database connection and returns the results.",
+    "parameters": {
+        "query": {
+            "type": "string",
+            "description": "SQL query to execute"
+        },
+        "connection_name": {
+            "type": "string",
+            "description": "Name of the database connection to use"
+        }
+    }
+} 

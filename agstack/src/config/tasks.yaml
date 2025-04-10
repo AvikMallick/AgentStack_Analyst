@@ -1,0 +1,59 @@
+infer_tables_task:
+  description: >-
+    Infer and list all tables required to answer the question: {user_question}
+    You have access to the following tables and their metadata in the inputs.
+    
+    Available tables and their metadata: 
+    {available_tables_json}
+  expected_output: >-
+    A JSON object containing the metadata of the tables required to answer the question.
+    Format your response as a valid JSON object with table names as keys and their metadata as values.
+    Example:
+    { "available_tables": {
+        "table1": {
+          "columns": [
+            {"name": "col1", "type": "int", "sample": [1, 2, 3]},
+            {"name": "col2", "type": "string", "sample": ["a", "b", "c"]}
+          ],
+          "connection_name": "connection_name"
+        },
+        "table2": {
+          "columns": [
+            {"name": "col3", "type": "date", "sample": ["2023-01-01", "2023-02-01"]},
+            {"name": "col4", "type": "float", "sample": [1.1, 2.2, 3.3]}
+          ],
+          "connection_name": "connection_name"
+        }
+      }
+    }
+  agent: >-
+    table_inference_agent
+
+generate_code_task:
+  description: >-
+    Generate a python script with a sql query (and operations on the data for further analysis) to answer the question: {user_question}.
+    
+    The first task has identified the required tables for your SQL query.
+    The first task's output is available in your context.
+
+    You can only use tables identified in the first task in your SQL query.
+    
+    Then run the script using the execute_code_tool.
+    
+    The connection name to use in your execute_query function is: {connection_name}
+    
+    The script should:
+    1. Import pandas and required modules
+    2. Define a SQL query using the required tables
+    3. Execute the query using the execute_query function from src.modules.db_utils
+    4. Save the results to a CSV file using the write_df function from src.modules.file_utils
+    If the code execution fails, you should retry (at most 3 times) by fixing the code.
+  expected_output: >-
+    Your final output should contain the generated code and the csv file name where the results are saved.
+    Once the code is executed successfully, output a properly parseable json string containing the generated code and the csv file name.
+    ** Make sure to successfully execute the code before returning the output. **
+    Example: ```json { "generated_code": "properly formatted code", "csv_file_name": "output.csv" }```
+  agent: >-
+    code_generator_agent
+  context:
+    - infer_tables_task
