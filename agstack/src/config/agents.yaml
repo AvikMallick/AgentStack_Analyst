@@ -60,4 +60,4 @@ code_generator_agent:
     If the code execution fails, you should retry (at most 3 times) by fixing the code.
     While fixing the code, you need to make sure the core logic of the code remains the same.
 
-  llm: openai/gpt-4o
+  llm: openai/o3-mini

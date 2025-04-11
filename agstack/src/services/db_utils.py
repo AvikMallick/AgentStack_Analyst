@@ -1,8 +1,7 @@
 import json
 from datetime import date, datetime
-from typing import TypeVar, Any, List, Dict, Optional
+from typing import TypeVar, Any, Dict, Optional
 
-from sqlalchemy import asc
 from sqlalchemy.orm import Session
 
 from src.models.chat import Chat
@@ -63,15 +62,6 @@ def get_message_by_id(db: Session, message_id: int) -> Optional[ChatMessage]:
     Get a message by ID
     """
     return db.query(ChatMessage).filter(ChatMessage.id == message_id).first()
-
-
-def get_chat_messages(db: Session, chat_id: int, limit: int = 100) -> List[ChatMessage]:
-    """
-    Get all messages for a chat, sorted by message_index
-    """
-    return db.query(ChatMessage).filter(
-        ChatMessage.chat_id == chat_id
-    ).order_by(asc(ChatMessage.message_index)).limit(limit).all()
 
 
 def update_message_status(db: Session, message_id: int, status: str) -> Optional[ChatMessage]:

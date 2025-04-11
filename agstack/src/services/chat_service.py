@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import List, Dict, Any, Optional, Tuple
 
 import agentops
-from sqlalchemy import func
+from sqlalchemy import func, asc
 from sqlalchemy.orm import Session
 
 from src.crew import AgstackCrew
@@ -15,8 +15,7 @@ from src.modules.file_utils import read_csv_data, get_csv_path
 from src.schemas.chat import ChatCreate
 from src.schemas.chat_message import ChatMessageCreate
 from src.services.db_utils import (
-    add_and_refresh, commit_changes, get_chat_by_id, get_chat_messages,
-    update_message_status, update_message_with_result
+    add_and_refresh, commit_changes, get_chat_by_id, update_message_status, update_message_with_result
 )
 
 
@@ -86,7 +85,9 @@ class ChatService:
 
     def get_chat_messages(self, db: Session, chat_id: int) -> List[ChatMessage]:
         """Get all messages for a chat in order"""
-        return get_chat_messages(db, chat_id)
+        return db.query(ChatMessage).filter(
+            ChatMessage.chat_id == chat_id
+        ).order_by(asc(ChatMessage.message_index)).all()
 
     def process_message(self, db: Session, message_data: ChatMessageCreate) -> ChatMessage:
         """
@@ -144,7 +145,6 @@ class ChatService:
                 # Set the assistant message content
                 assistant_message.content = (
                     f"I've analyzed your query and here's what I found:\n\n"
-                    f"I used the following Python:\n```python\n{generated_code}\n```\n\n"
                     f"The query returned {csv_content.get('row_count', 0)} results."
                 )
 
@@ -158,6 +158,9 @@ class ChatService:
 
                 update_message_with_result(db=db, message_id=assistant_message.id, status="failed",
                                            result_content={"error": "Crew execution failed", "details": error_message})
+
+            # Update the user message status to completed
+            update_message_status(db, user_message.id, "completed")
 
             # Update chat's updated_at timestamp
             chat = get_chat_by_id(db, message_data.chat_id)
@@ -180,7 +183,11 @@ class ChatService:
             else:
                 # If assistant message wasn't created yet, update user message and return it
                 update_message_status(db, user_message.id, "failed")
+
                 return user_message
+        finally:
+            # Commit the changes to the database
+            commit_changes(db)
 
     def get_connection_metadata(self, db: Session, connection_ids: List[int]) -> Dict[str, Dict[str, Any]]:
         """Get metadata for connections"""
@@ -200,9 +207,9 @@ class ChatService:
                     sample_values = json.loads(column.sample_values) if column.sample_values else []
 
                     columns_metadata.append({
-                        "name": column.column_name,
-                        "type": column.data_type,
-                        "sample": sample_values
+                        "column_name": column.column_name,
+                        "data_type": column.data_type,
+                        "sample_values": sample_values
                     })
 
                 table_metadata[table.table_name] = {

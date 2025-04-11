@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional
+from typing import List
 
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
@@ -98,7 +98,7 @@ async def send_message(
         connection_ids=connection_ids
     )
     
-    # Process message synchronously
+    # Process message
     try:
         return chat_service.process_message(db, chat_message)
     except Exception as e:

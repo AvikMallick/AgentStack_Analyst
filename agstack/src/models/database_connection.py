@@ -1,9 +1,8 @@
-from datetime import datetime
-
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
 from src.core.database import Base
+
 
 class DatabaseConnection(Base):
     """
@@ -21,4 +20,4 @@ class DatabaseConnection(Base):
     schema_name = Column(String, default="public")  # Default to public schema
 
     # Add relationship with cascade delete - use table_details instead of tables
-    table_details = relationship("TableDetails", back_populates="connection", cascade="all, delete-orphan") 
+    table_details = relationship("TableDetails", back_populates="connection", cascade="all, delete-orphan")

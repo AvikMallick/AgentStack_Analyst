@@ -422,7 +422,7 @@ const ChatPage = () => {
                     {message.generated_code && (
                       <Box mt={2}>
                         <Typography variant="caption" sx={{ color: message.role === 'user' ? 'white' : 'text.secondary' }}>
-                          Generated SQL:
+                          Generated Python:
                         </Typography>
                         <Paper sx={{ 
                           p: 1, 
@@ -430,6 +430,8 @@ const ChatPage = () => {
                           bgcolor: message.role === 'user' ? 'rgba(255,255,255,0.1)' : 'grey.100',
                           fontFamily: 'monospace',
                           fontSize: '0.85rem',
+                          whiteSpace: 'pre',
+                          overflow: 'auto',
                         }}>
                           {message.generated_code}
                         </Paper>

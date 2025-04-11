@@ -93,7 +93,7 @@ const ChatMessage = ({ message }) => {
                       className="text-gray-700 bg-gray-100 hover:bg-gray-200 flex items-center gap-2"
                     >
                       <FiCode className="h-4 w-4" />
-                      <span>{showCode ? 'Hide SQL Query' : 'Show SQL Query'}</span>
+                      <span>{showCode ? 'Hide Python Code' : 'Show Python Code'}</span>
                     </Button>
                     
                     {showCode && (
@@ -121,9 +121,9 @@ const ChatMessage = ({ message }) => {
                   {showCode && (
                     <div className="bg-gray-50 rounded-lg overflow-hidden border border-gray-200 shadow-sm transition-all">
                       <div className="bg-gray-100 px-4 py-2 border-b border-gray-200 flex justify-between items-center">
-                        <span className="text-xs font-medium text-gray-600">Generated SQL Query</span>
+                        <span className="text-xs font-medium text-gray-600">Generated Python</span>
                       </div>
-                      <pre className="p-4 overflow-auto text-sm max-h-64">
+                      <pre className="p-4 overflow-auto text-sm max-h-64 whitespace-pre">
                         <code className="text-gray-800 font-mono">{message.generated_code}</code>
                       </pre>
                     </div>
